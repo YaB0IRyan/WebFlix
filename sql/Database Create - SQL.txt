@@ -1,0 +1,65 @@
+CREATE TABLE `users` (
+	`userID` varchar(36) NOT NULL,
+	`email` varchar(128) NOT NULL,
+	`forename` varchar(64) NOT NULL,
+	`surname` varchar(64) NOT NULL,
+	`birthDate` date NOT NULL,
+	`contactNumber` varchar (32) NOT NULL,
+	`country` varchar(128) NOT NULL,
+	`joinDate` date NOT NULL,
+	`userStatus` varchar(128) NOT NULL,
+	`userPassword` varchar(256) NOT NULL,
+	`securityKey` varchar(256) NOT NULL,
+	`isAdmin` tinyint(1) NOT NULL DEFAULT '0',
+	`isPaid` tinyint(1) NOT NULL DEFAULT '0',
+	PRIMARY KEY (`userID`)
+);
+CREATE TABLE `mediaInfo` (
+	`mediaInfoID` varchar(36) NOT NULL,
+	`title` varchar(128) NOT NULL,
+	`image` varchar(128) NOT NULL,
+	`description` varchar(512) NOT NULL,
+	`releaseDate` date NOT NULL,
+	`language` varchar(128) NOT NULL,
+	`trailerLink` varchar(128) NOT NULL,
+	PRIMARY KEY (`mediaInfoID`)
+);
+CREATE TABLE `seasons` (
+	`seasonID` varchar(36) NOT NULL,
+	`mediaInfoID` varchar(36) NOT NULL,
+	`number` int NOT NULL,
+	PRIMARY KEY (`seasonId`)
+);
+CREATE TABLE `media` (
+	`mediaID` varchar(36) NOT NULL,
+	`seasonID` varchar(36) NOT NULL,
+	`episodeNumber` int NOT NULL,
+	`link` varchar(128) NOT NULL,
+	PRIMARY KEY (`mediaID`)
+);
+CREATE TABLE `mediaGenre` (
+	`mediaGenreID` varchar(36) NOT NULL,
+	`mediaInfoID` varchar(36) NOT NULL,
+	`genreID` varchar(128) NOT NULL,
+	PRIMARY KEY (`mediaGenreID`)
+);
+CREATE TABLE `mediaType` (
+	`typeID` varchar(36) NOT NULL,
+	`mediaInfoID` varchar(36) NOT NULL,
+	`name` enum('Movie', 'Show') NOT NULL,
+	PRIMARY KEY (`typeID`)
+);
+CREATE TABLE `genre` (
+	`genreID` varchar(36) NOT NULL,
+	`name` varchar(128) NOT NULL,
+	PRIMARY KEY (`genreId`)
+);
+ALTER TABLE `seasons`
+ADD CONSTRAINT `fkSeasonsMediaInfoID` FOREIGN KEY(`mediaInfoID`) REFERENCES `mediaInfo` (`mediaInfoID`) ON DELETE CASCADE;
+ALTER TABLE `media`
+ADD CONSTRAINT `fkMediaSeasonID` FOREIGN KEY(`seasonID`) REFERENCES `seasons` (`seasonID`) ON DELETE CASCADE;
+ALTER TABLE `mediaGenre`
+ADD CONSTRAINT `fkMediaGenreMediaInfoID` FOREIGN KEY(`mediaInfoID`) REFERENCES `mediaInfo` (`mediaInfoID`) ON DELETE CASCADE,
+ADD CONSTRAINT `fkMediaGenreGenreID` FOREIGN KEY(`genreID`) REFERENCES `genre` (`genreID`) ON DELETE CASCADE;
+ALTER TABLE `mediaType`
+ADD CONSTRAINT `fkMediaTypeMediaInfoID` FOREIGN KEY(`mediaInfoID`) REFERENCES `mediaInfo` (`mediaInfoID`) ON DELETE CASCADE;
